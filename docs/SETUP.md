@@ -47,6 +47,42 @@ chmod +x pico_setup.sh
 sudo reboot
 ```
 
+- SSH back into the Raspberry Pi and `cd ~/src/pico`
+- mount the Pico and copy an example program (replace `sda1` with whatever the device was given)
+
+```shell
+sudo mkdir /mnt/pico
+sudo mount /dev/sda1 /mnt/pico
+sudo cp pico-examples/build/blink/blink.uf2 /mnt/pico
+sudo sync
+sudo umount /mnt/pico
+```
+
+- at this point the LED on the Pico should be blinking
+
+#### Hello World
+
+- on the Raspberry Pi enable UART using `raspi-config` under the Interfacing Options sub-menu
+- connect the devices
+
+Raspberry Pi      | Raspberry Pi Pico
+----------------- | -----------------
+GND               | GND
+GPIO15 (UART_RX0) | GPIO0 (UART0_TX)
+GPIO14 (UART_TX0) | GPOI1 (UART0_RX)
+
+- section 4.5 of the Getting Started with Raspberry Pi Pico is more useful for this than these instructions
+- unplug the Pico and plug it back in with the BOOTSEL button pressed
+- copy the binary for the example
+
+```shell
+sudo mount /dev/sda1 /mnt/pico
+sudo cp ~/src/pico/pico-examples/build/hello_world/serial/hello_serial.uf2 /mnt/pico/
+```
+
+- start a terminal on the Raspberry Pi with `minicom -b 115200 -o -D /dev/serial0`
+- it should start printing "Hello, World" to the terminal every second
+
 ### References
 
 - https://datasheets.raspberrypi.org/pico/getting-started-with-pico.pdf
